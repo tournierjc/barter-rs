@@ -69,7 +69,7 @@ impl SubscriptionValidator for WebSocketSubValidator {
                 // If timeout reached, return SubscribeError
                 _ = tokio::time::sleep(timeout) => {
                     break Err(SocketError::Subscribe(
-                        format!("subscription validation timeout reached: {:?}", timeout)
+                        format!("subscription validation timeout reached: {timeout:?}")
                     ))
                 },
                 // Parse incoming messages and determine subscription outcomes
@@ -96,7 +96,7 @@ impl SubscriptionValidator for WebSocketSubValidator {
                             // Subscription failure
                             Err(err) => break Err(err)
                         }
-                        Some(Err(SocketError::Deserialise { error: _, payload })) if success_responses >= 1 => {
+                        Some(Err(SocketError::Deserialise { error: _, payload })) => {
                             // Most likely already active subscription payload, so add to market
                             // event buffer for post validation processing
                             buff_active_subscription_events.push(WsMessage::text(payload));
